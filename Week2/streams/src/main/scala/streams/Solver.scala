@@ -72,13 +72,10 @@ trait Solver extends GameDef {
            explored: Set[Block]): Stream[(Block, List[Move])] ={
 
     val extPaths = initial.map(initPath => neighborsWithHistory(initPath._1, initPath._2))
-    val extNewPaths = for {
-      extP <- extPaths
-      newNPs = newNeighborsOnly(extP, explored)
-      newNP <- newNPs
-    } yield newNP
 
-    val extExplored = (for {b <- extNewPaths} yield b._1).toSet ++ explored
+    val extNewPaths = extPaths.map(ep=>newNeighborsOnly(ep, explored)).flatten
+
+    val extExplored = extNewPaths.map(enp=> enp._1).toSet ++ explored
 
     if (extPaths.isEmpty)
       initial
