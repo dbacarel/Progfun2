@@ -71,13 +71,16 @@ trait Solver extends GameDef {
   def from(initial: Stream[(Block, List[Move])],
            explored: Set[Block]): Stream[(Block, List[Move])] ={
 
-    val extPaths = initial.map(initPath => neighborsWithHistory(initPath._1, initPath._2))
+    val extNewPaths = initial.
+    //Extend initial stream with all the viable moves from the current position
+      map(initPath => neighborsWithHistory(initPath._1, initPath._2)).
+    //Filter only unexplored moves
+      map(ep => newNeighborsOnly(ep, explored)).flatten
 
-    val extNewPaths = extPaths.map(ep=>newNeighborsOnly(ep, explored)).flatten
-
+    //Add the new blocks to the explored set
     val extExplored = extNewPaths.map(enp=> enp._1).toSet ++ explored
 
-    if (extPaths.isEmpty)
+    if (extNewPaths.isEmpty)
       initial
     else extNewPaths ++ from(extNewPaths, extExplored)
   }
