@@ -72,7 +72,7 @@ trait Solver extends GameDef {
            explored: Set[Block]): Stream[(Block, List[Move])] ={
 
     val extNewPaths = initial.
-    //Extend initial stream with all the viable moves from the current position
+    //Extend each list of moves in initial stream with all the available moves by exploring the neighbours
       map(initPath => neighborsWithHistory(initPath._1, initPath._2)).
     //Filter only unexplored moves
       map(ep => newNeighborsOnly(ep, explored)).flatten
