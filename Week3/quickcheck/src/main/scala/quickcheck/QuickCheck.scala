@@ -52,5 +52,4 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   //The key of a node is greater than or equal to the key of its parent
 
-  
 }
