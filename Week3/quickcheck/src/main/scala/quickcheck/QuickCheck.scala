@@ -34,10 +34,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   //Given any heap, you should get a sorted sequence of elements when continually finding and deleting minima. (Hint: recursion and helper functions are your friends.)
   property("bumblebutt") = forAll{ (h:H) =>
-    def kitty(mweo:H) : List[A] = {
-      if (isEmpty(mweo)) Nil else findMin(mweo)::kitty(deleteMin(mweo))
-    }
-
+    def kitty(mweo:H):List[A] = if (isEmpty(mweo)) Nil else findMin(mweo)::kitty(deleteMin(mweo))
     val flatHeap = kitty(h)
     flatHeap == flatHeap.sorted
   }
@@ -50,6 +47,27 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     findMin(merged_heap) == ord.min(h1_min, h2_min)
   }
 
-  //The key of a node is greater than or equal to the key of its parent
+  //The result of the melding an empty heap with a non-empty one is the latter
+  property("identity funk") = forAll{ (a:A) =>
+    val h = insert(a, empty)
+    meld(empty, h) == h
+  }
+
+  //The result of the melding of 2 non empty heaps contains all the elements of those
+  property("verdammt, du slack") = forAll{ (a:A, b:A) =>
+    def kitty(mweo:H):List[A] = if (isEmpty(mweo)) Nil else findMin(mweo)::kitty(deleteMin(mweo))
+    val h1 = insert(a, empty)
+    val h2 = insert(b, empty)
+    val m_h = meld(h1, h2)
+    List(a,b).sorted == kitty(m_h).sorted
+  }
+
+  //deleteMin deletes the minima
+  property("for-got-ten") = forAll{ (_:A) =>
+    val h = insert(3,insert(2,insert(1, empty)))
+    val min = findMin(h)
+    ord.lt(min, findMin(deleteMin(h)))
+  }
+
 
 }
